@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Application</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f4f7f6;
+    }
+    .form-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0088cc; /* Telegram Blue */
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #0077b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Loan Application</h2>
+
+  <form id="loanForm">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="number" id="amount" placeholder="Loan Amount (£)" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <button type="submit" id="submitBtn">Submit Application</button>
+  </form>
+</div>
+
+<script>
+document.getElementById("loanForm").addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevents the page from reloading
+
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.innerText = "Sending...";
+  submitBtn.disabled = true;
+
+  const name = document.getElementById("name").value;
+  const amount = document.getElementById("amount").value;
+  const phone = document.getElementById("phone").value;
+
+  // Telegram Message Formatting
+  const message = `🚨 *New Loan Application* 🚨\n\n` +
+                  `👤 *Name:* ${name}\n` +
+                  `💰 *Amount:* £${amount}\n` +
+                  `📞 *Phone:* ${phone}`;
+
+  // Your Telegram Credentials
+  const token = "8857305686:AAHBcZiy0XPGAHf7KL2fKPq76wKVbGvwITg";
+  const chatId = "942494452";
+  const url = `https://telegram.org{token}/sendMessage`;
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: message,
+      parse_mode: "Markdown" // Makes the text bold and clean in Telegram
+    })
+  })
+  .then(response => {
+    if (response.ok) {
+      alert("🎉 Application submitted successfully!");
+      document.getElementById("loanForm").reset();
+    } else {
+      alert("⚠️ Failed to send application. Please check your bot configurations.");
+    }
+  })
+  .catch(error => {
+    console.error("Error:", error);
+    alert("❌ Error sending. Check your internet connection.");
+  })
+  .finally(() => {
+    submitBtn.innerText = "Submit Application";
+    submitBtn.disabled = false;
+  });
+});
+</script>
+
+</body>
+</html>
